@@ -1,5 +1,11 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+	h1= title
+	p Welcome to #{title}
+
+	div(id='presentations')
+		ul
+			each item in presentations
+				li(id = item.id)
+					p #{item.name}

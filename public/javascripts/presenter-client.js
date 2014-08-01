@@ -1,0 +1,2 @@
+var PRESENTER = window.PRESENTER || {};
+
