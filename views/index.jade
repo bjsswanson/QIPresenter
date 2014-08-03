@@ -12,7 +12,7 @@ block content
 				a(class='navbar-brand', href='/') #{title}
 			div(class='navbar-collapse collapse')
 				div(class='navbar-form navbar-right')
-					a(id='addPresentation', class='btn btn-primary', href='#') Add Presentation
+					a(class='btn btn-primary', data-toggle='lightbox', href='#addPresentationLightbox') Add Presentation
 	div(class='container')
 		div(class='presentations')
 			table(class='table table-hover')
@@ -28,4 +28,8 @@ block content
 									a(class='btn btn-primary', role='button') Control
 									a(class='btn btn-success', role='button') View
 									a(class='btn btn-danger', role='button') Delete
+	div(id='addPresentationLightbox', class='lightbox hide fade', tabindex='-1', role='dialog', aria-hidden='true')
+		div(class='lightbox-content')
+			p Hi!
+
 
