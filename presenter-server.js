@@ -1,5 +1,4 @@
 var uuid = require('node-uuid');
-var socket = require('socket.io'); //How to share socket around application
 var _ = require('underscore');
 
 var PRESENTER_SHARED = require('./shared/presenter-shared'); //Ask ID's about this
@@ -12,8 +11,6 @@ PRESENTER.loadPresentations = function() {
 			PRESENTER.Presentations.push(new PRESENTER.Presentation(presentation))
 		});
 	});
-
-	console.log(PRESENTER.Presentations);
 }
 
 PRESENTER.addPresentation = function( name ) {
@@ -27,30 +24,42 @@ PRESENTER.addPresentation = function( name ) {
 	return presentation;
 };
 
-PRESENTER.onConnect = function( socket ) {
-	PRESENTER.onAddPresentation(socket);
+PRESENTER.onConnect = function( io ) {
+	io.on('connection', function(socket){
+		PRESENTER.onAddPresentation(socket);
+		PRESENTER.onAddSlide(socket);
+		PRESENTER.onViewSlide(socket);
+	});
 };
 
 PRESENTER.onAddPresentation = function( socket ) {
 	socket.on("addPresentation", function( name ) {
 		var presentation = PRESENTER.addPresentation( name );
-		socket.emit("addPresentation", presentation);
+		socket.emit("addedPresentation", presentation);
 	})
 };
 
 PRESENTER.onAddSlide = function( socket ) {
 	socket.on("addSlide", function( id, data ){
 		var presentation = PRESENTER.getPresentation( id );
-		if(presentation != undefined) {
-			presentation.addSlide( data );
+		if(presentation != undefined && presentation.id != undefined) {
+			var slide = presentation.addSlide( data );
+			socket.emit("addedSlide", slide);
 		}
+		return new Slide();
 	});
 };
 
-module.exports = function( storage ) { //Ask about this too.
+PRESENTER.onViewSlide = function ( socket ) {
+	socket.on("viewSlide", function( data ){
+		socket.emit("viewSlide", data);
+	})
+}
+
+module.exports = function( storage, io ) { //Ask about this too.
 	PRESENTER.Storage = storage;
 	PRESENTER.loadPresentations();
-	PRESENTER.addPresentation("test");
+	PRESENTER.onConnect( io );
 	return PRESENTER;
 };
 

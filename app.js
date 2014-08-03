@@ -5,16 +5,16 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var routes = require('./routes/index');
+
 var storage = require('node-persist');
 storage.initSync();
-
-GLOBAL.PRESENTER = require('./presenter-server')(storage);
-
-var routes = require('./routes/index');
 
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+
+GLOBAL.PRESENTER = require('./presenter-server')(storage, io);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

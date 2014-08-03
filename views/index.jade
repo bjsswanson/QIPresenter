@@ -1,11 +1,31 @@
 extends layout
 
 block content
-	h1= title
-	p Welcome to #{title}
+	div(class='navbar navbar-default navbar-fixed-top', role='navigation')
+		div(class='container')
+			div(class='navbar-header')
+				button(type='button', class='navbar-toggle', data-toggle='collapse', data-target='.navbar-collapse')
+					span(class='sr-only') Toggle navigation
+					span(class='icon-bar')
+					span(class='icon-bar')
+					span(class='icon-bar')
+				a(class='navbar-brand', href='/') #{title}
+			div(class='navbar-collapse collapse')
+				div(class='navbar-form navbar-right')
+					a(id='addPresentation', class='btn btn-primary', href='#') Add Presentation
+	div(class='container')
+		div(class='presentations')
+			table(class='table table-hover')
+				thead
+					tr
+						th Presentation
+				tbody
+					each item in presentations
+						tr(class='presentation', id = item.id)
+							td #{item.name}
+							td
+								div(class='btn-toolbar pull-right')
+									a(class='btn btn-primary', role='button') Control
+									a(class='btn btn-success', role='button') View
+									a(class='btn btn-danger', role='button') Delete
 
-	div(id='presentations')
-		ul
-			each item in presentations
-				li(id = item.id)
-					p #{item.name}

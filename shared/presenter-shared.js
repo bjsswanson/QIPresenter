@@ -28,9 +28,20 @@
 	PRESENTER.Presentation.prototype = {
 		constructor: PRESENTER.Presentation,
 
-		addSlide: function( slide ){
+		addSlide: function( data ) {
+			var id = this.slides.length;
+			var slide = new Slide({id: id, type: data.type, url: data.url});
 			this.slides.push(slide);
-			return this;
+			return slide;
+		},
+
+		getSlide: function ( id ) {
+			for(index = 0; index < this.slides.length; index++) {
+				if(this.slides[index].id === id){
+					return this.slides[index];
+				}
+			}
+			return new PRESENTER.Slide();
 		}
 	};
 
