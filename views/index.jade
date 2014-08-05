@@ -38,10 +38,12 @@ block content
 				div(class='form-group')
 					div(class='col-sm-offset-2 col-sm-10')
 						div(class='btn-toolbar')
-							button(id='apButton', type='button' class='btn btn-default') Add Presentation
+							button(id='apButton', type='submit' class='btn btn-default') Add Presentation
 							button(id='apClose', type='button' class='btn btn-default') Close
 	div(id='dpDialog', class='presentationDialog', tabindex='-1', role='dialog', aria-hidden='true')
 		div(class='container')
+			p In order to delete please type the name of the presentation:&nbsp;
+				span(id='enterDName')
 			form(class='form', role='form')
 				div(class='form-group')
 					label(for='presentationName', class='col-sm-2', control-label) Presentation name
@@ -50,5 +52,5 @@ block content
 				div(class='form-group')
 					div(class='col-sm-offset-2 col-sm-10')
 						div(class='btn-toolbar')
-							button(id='dpButton', type='button' class='btn btn-default') Delete Presentation
+							button(id='dpButton', type='submit' class='btn btn-default') Delete Presentation
 							button(id='dpClose', type='button' class='btn btn-default') Close

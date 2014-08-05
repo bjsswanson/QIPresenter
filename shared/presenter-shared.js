@@ -27,8 +27,7 @@
 		constructor: PRESENTER.Presentation,
 
 		addSlide: function( data ) {
-			var id = this.slides.length;
-			var slide = new Slide({id: id, type: data.type, url: data.url});
+			var slide = new PRESENTER.Slide({id: data.id, type: data.type, data: data.data, title: data.title});
 			this.slides.push(slide);
 			return slide;
 		},
@@ -45,16 +44,18 @@
 	PRESENTER.Slide = function( obj ) {
 		this.id = obj.id || "";
 		this.type = obj.type || "";
-		this.url = obj.url || "";
+		this.data = obj.data || "";
+		this.title = obj.title || "";
 	};
 
 	PRESENTER.Slide.prototype = {
 		constructor: PRESENTER.Presentation,
 
-		set: function( id, type, url){
+		set: function( id, type, data, title){
 			this.id = id;
 			this.type = type;
-			this.url = url;
+			this.data = data;
+			this.title = title;
 
 			return this;
 		}

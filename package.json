@@ -16,6 +16,7 @@
 	"socket.io": "~1.0.6",
 	"underscore": "~1.6.0",
 	"node-persist": "0.0.2",
-	"node-uuid": "1.4.1"
+	"node-uuid": "1.4.1",
+	"request": "2.39.0"
   }
 }

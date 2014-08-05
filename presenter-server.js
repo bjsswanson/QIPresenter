@@ -1,7 +1,8 @@
 var uuid = require('node-uuid');
 var _ = require('underscore');
+var request = require('request');
 
-var PRESENTER_SHARED = require('./shared/presenter-shared'); //Ask ID's about this
+var PRESENTER_SHARED = require('./shared/presenter-shared'); //Unnecessary, move into this file.
 
 var PRESENTER = PRESENTER_SHARED || {};
 
@@ -37,6 +38,30 @@ PRESENTER.deletePresentation = function( id ) {
 	}
 };
 
+PRESENTER.addSlide = function( data ) {
+	var pid = data.pid;
+	var presentation = PRESENTER.getPresentation( pid );
+	if(presentation != undefined && presentation.id != undefined) {
+		data.id = uuid.v4();
+
+		if(data.type === 'youtube'){
+			request('http://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=nbeiq1FP3Eg&format=json', function (error, response, body) {
+				if (!error && response.statusCode == 200) {
+					var yData = JSON.parse(body);
+					data.title = yData.title;
+					var slide = presentation.addSlide(data);
+					PRESENTER.Storage.setItem(pid, presentation);
+			    }
+			});
+		} else {
+			var slide = presentation.addSlide(data);
+			PRESENTER.Storage.setItem(pid, presentation);
+		}
+
+		return slide;
+	}
+}
+
 PRESENTER.onConnect = function( io ) {
 	io.on('connection', function( socket ){
 		PRESENTER.onAddPresentation( socket );
@@ -61,10 +86,9 @@ PRESENTER.onDeletePresentation = function( socket ) {
 };
 
 PRESENTER.onAddSlide = function( socket ) {
-	socket.on("addSlide", function( id, data ){
-		var presentation = PRESENTER.getPresentation( id );
-		if(presentation != undefined && presentation.id != undefined) {
-			var slide = presentation.addSlide( data );
+	socket.on("addSlide", function( data ){
+		var slide = PRESENTER.addSlide( data );
+		if(slide != undefined) {
 			socket.emit("addedSlide", slide);
 		}
 	});
@@ -72,7 +96,9 @@ PRESENTER.onAddSlide = function( socket ) {
 
 PRESENTER.onViewSlide = function ( socket ) {
 	socket.on("viewSlide", function( data ){
-		socket.emit("viewSlide", data);
+		var presentation = PRESENTER.getPresentation(data.pid);
+		var slide = presentation.getSlide(data.sid);
+		socket.emit("viewSlide", slide);
 	})
 }
 

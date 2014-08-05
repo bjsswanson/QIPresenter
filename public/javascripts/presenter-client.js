@@ -6,8 +6,9 @@ PRESENTER.Present.clearDialogs = function() {
 	$('#apName').val('');
 	$('#apDialog').trigger('close');
 
-	$('#dpButton').attr('data-id', '');
-	$('#dpButton').attr('data-name', '');
+	$('#dpButton')
+		.attr('data-id', '')
+		.attr('data-name', '');
 	$('#dpName').val('');
 	$('#dpDialog').trigger('close');
 };
@@ -23,7 +24,7 @@ PRESENTER.Present.createAddDialog = function() {
         });
 	});
 
-	$('#apButton').click(function( e ) {
+	$('#apDialog form').submit(function( e ) {
 		e.preventDefault();
 		var pName = $('#apName').val();
 		if ($.trim(pName)) {
@@ -47,14 +48,14 @@ PRESENTER.Present.createDeleteDialog = function() {
 		var id = $(this).attr('data-id');
 		var name = $(this).attr('data-name');
 		var dialog = $('#dpDialog');
-		var button = $('#dpButton');
-
 		dialog.lightbox_me({
 	        centered: true,
 	        onLoad: function() {
 		        dialog.find('input:first').focus();
-		        button.attr('data-id', id);
-		        button.attr('data-name', name);
+		        $('#dpButton')
+			        .attr('data-id', id)
+		            .attr('data-name', name);
+		        $('#enterDName').text(name);
             }
         });
 	});
@@ -64,7 +65,7 @@ PRESENTER.Present.createDeleteDialog = function() {
 		$('#dpDialog').trigger('close');
 	});
 
-	$('#dpButton').click(function( e ) {
+	$('#dpDialog form').submit(function( e ) {
 		e.preventDefault();
 		var pName = $('#dpName').val();
 		var dataId = $('#dpButton').attr('data-id');
@@ -82,21 +83,30 @@ PRESENTER.Present.initSocketEvents = function() {
 	socket.on('addedPresentation', function( presentation ){
 		var pHtml = $.get("/templates/presentation.html", function( data ){
 			var pData = $(data);
+
 			pData.attr('id', presentation.id);
 
 			pData.find('td.name').text(presentation.name);
-			pData.find('td .control').attr('href', '/' + presentation.id + '/control')
-			pData.find('td .view').attr('href', '/' + presentation.id + '/view')
-			pData.find('td .delete').click(function( e ){
-				e.preventDefault();
-				$('#dpDialog').lightbox_me({
-			        centered: true,
-			        onLoad: function() {
-			            $('#dpDialog').find('input:first').focus()
-		            }
-		        });
-			})
+			pData.find('td .control').attr('href', '/' + presentation.id + '/control');
+			pData.find('td .view').attr('href', '/' + presentation.id + '/view');
 
+			pData
+				.find('td .delete')
+				.attr('data-id', presentation.id)
+				.attr('data-name', presentation.name)
+				.click(function( e ){
+					e.preventDefault();
+					$('#dpDialog').lightbox_me({
+				        centered: true,
+				        onLoad: function() {
+				            $('#dpDialog').find('input:first').focus();
+					        $('#dpButton')
+					            .attr('data-id', presentation.id)
+		                        .attr('data-name', presentation.name);
+					        $('#enterDName').text(presentation.name);
+			            }
+			        });
+				})
 			$('#pList').append( pData );
 		});
 	});
@@ -107,8 +117,52 @@ PRESENTER.Present.initSocketEvents = function() {
 	});
 }
 
+PRESENTER.Control = {};
+PRESENTER.Control.clearDialogs = function() {
+	$('#asDialog').trigger('close');
+	$('#dsDialog').trigger('close');
+}
+
+PRESENTER.Control.createAddDialog = function() {
+	$('#asOpen').click(function( e ) {
+		e.preventDefault();
+		$('#asDialog').lightbox_me({
+	        centered: true,
+	        onLoad: function() {
+	            $('#asDialog').find('input:first').focus()
+            }
+        });
+	});
+
+	$('#asDialog form').submit(function( e ) {
+		e.preventDefault();
+		var pid = $('#presentation').attr('data-id');
+		var type = $('#asType').val();
+		var data = $('#asData').val();
+		var title = "";
+
+		socket.emit('addSlide', {pid: pid, type: type, data: data, title: title});
+		PRESENTER.Control.clearDialogs();
+	});
+
+	$('#asClose').click(function( e ) {
+		e.preventDefault();
+		$('#asDialog').trigger('close');
+	});
+}
+
+PRESENTER.Control.viewSlides = function() {
+	$('.slide').click(function(){
+		var pid = $('#presentation').attr('data-id');
+		var sid = this.attr('data-id');
+		socket.emit("viewSlide", {pid: pid, sid: sid});
+	});
+}
+
 $(function() {
 	PRESENTER.Present.createAddDialog();
 	PRESENTER.Present.createDeleteDialog();
 	PRESENTER.Present.initSocketEvents();
+
+	PRESENTER.Control.createAddDialog();
 });

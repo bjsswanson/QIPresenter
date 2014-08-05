@@ -19,9 +19,41 @@ body {
 	vertical-align: middle;
 }
 
-.presentationDialog {
+.presentationDialog, .slideDialog {
 	background: #fff;
 	padding: 10px;
 	border-radius:12px;
 	display: none;
+}
+
+.slides {
+	padding-top: 20px;
+}
+
+.slide {
+	cursor: default;
+	font-size: 14px;
+	float: left;
+	padding: 10px;
+	margin: 5px;
+	width: 150px;
+	height: 120px;
+	border-radius: 12px;
+	border: 1px solid darkgray;
+	text-align: center;
+	line-height: 100px;
+	overflow: hidden;
+}
+
+.slide span {
+	display: inline-block;
+	vertical-align: middle;
+	line-height: normal;
+}
+
+.youtube {
+	background-image: url('/images/youtube.png');
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: center;
 }
