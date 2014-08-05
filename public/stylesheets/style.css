@@ -6,3 +6,22 @@ body {
 .presentations {
 	margin-top: 50px;
 }
+
+.form-group {
+	margin-right: 5px;
+}
+
+.btn-toolbar>.btn {
+	margin-top: 5px;
+}
+
+.table>tbody>tr>td {
+	vertical-align: middle;
+}
+
+.presentationDialog {
+	background: #fff;
+	padding: 10px;
+	border-radius:12px;
+	display: none;
+}

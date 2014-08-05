@@ -4,14 +4,12 @@
 
 	PRESENTER.getPresentation = function( id ) {
 		var presentations = PRESENTER.Presentations;
-
 		for(index = 0; index < presentations.length; index++) {
-			if(presentations[index].id === id) {
+			var presentation = presentations[index];
+			if(presentation.id === id) {
 				return presentation;
 			}
 		}
-
-		return new PRESENTER.Presentation();
 	}
 
 	PRESENTER.Presentation = function ( obj ) {
@@ -41,7 +39,6 @@
 					return this.slides[index];
 				}
 			}
-			return new PRESENTER.Slide();
 		}
 	};
 

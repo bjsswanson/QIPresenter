@@ -12,24 +12,43 @@ block content
 				a(class='navbar-brand', href='/') #{title}
 			div(class='navbar-collapse collapse')
 				div(class='navbar-form navbar-right')
-					a(class='btn btn-primary', data-toggle='lightbox', href='#addPresentationLightbox') Add Presentation
+					a(id='apOpen', class='btn btn-primary', href='#') Add Presentation
 	div(class='container')
 		div(class='presentations')
 			table(class='table table-hover')
 				thead
 					tr
 						th Presentation
-				tbody
+				tbody(id='pList')
 					each item in presentations
 						tr(class='presentation', id = item.id)
-							td #{item.name}
+							td(class='name') #{item.name}
 							td
 								div(class='btn-toolbar pull-right')
-									a(class='btn btn-primary', role='button') Control
-									a(class='btn btn-success', role='button') View
-									a(class='btn btn-danger', role='button') Delete
-	div(id='addPresentationLightbox', class='lightbox hide fade', tabindex='-1', role='dialog', aria-hidden='true')
-		div(class='lightbox-content')
-			p Hi!
-
-
+									a(href='/#{item.id}/control', class='control btn btn-primary', role='button') Control
+									a(href='/#{item.id}/view', class='view btn btn-success', role='button') View
+									a(data-id='#{item.id}', data-name='#{item.name}', class='delete btn btn-danger', role='button') Delete
+	div(id='apDialog', class='presentationDialog', tabindex='-1', role='dialog', aria-hidden='true')
+		div(class='container')
+			form(class='form', role='form')
+				div(class='form-group')
+					label(for='presentationName', class='col-sm-2', control-label) Presentation name
+					div(class='col-sm-10')
+						input(type='text', class='form-control', id='apName', placeholder='Presentation name')
+				div(class='form-group')
+					div(class='col-sm-offset-2 col-sm-10')
+						div(class='btn-toolbar')
+							button(id='apButton', type='button' class='btn btn-default') Add Presentation
+							button(id='apClose', type='button' class='btn btn-default') Close
+	div(id='dpDialog', class='presentationDialog', tabindex='-1', role='dialog', aria-hidden='true')
+		div(class='container')
+			form(class='form', role='form')
+				div(class='form-group')
+					label(for='presentationName', class='col-sm-2', control-label) Presentation name
+					div(class='col-sm-10')
+						input(type='text', class='form-control', id='dpName', placeholder='Presentation name')
+				div(class='form-group')
+					div(class='col-sm-offset-2 col-sm-10')
+						div(class='btn-toolbar')
+							button(id='dpButton', type='button' class='btn btn-default') Delete Presentation
+							button(id='dpClose', type='button' class='btn btn-default') Close

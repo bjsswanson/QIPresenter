@@ -6,6 +6,7 @@ var PRESENTER_SHARED = require('./shared/presenter-shared'); //Ask ID's about th
 var PRESENTER = PRESENTER_SHARED || {};
 
 PRESENTER.loadPresentations = function() {
+	PRESENTER.Presentations = [];
 	PRESENTER.Storage.values(function(data){
 		_.each(data, function(presentation){
 			PRESENTER.Presentations.push(new PRESENTER.Presentation(presentation))
@@ -24,11 +25,24 @@ PRESENTER.addPresentation = function( name ) {
 	return presentation;
 };
 
+PRESENTER.deletePresentation = function( id ) {
+	var presentations = PRESENTER.Presentations;
+	for(var i = 0; i < presentations.length; i++) {
+		var presentation = presentations[i];
+		if(id === presentation.id){
+			presentations.splice(presentation, 1);
+			PRESENTER.Storage.removeItem(id);
+			return presentation;
+		}
+	}
+};
+
 PRESENTER.onConnect = function( io ) {
-	io.on('connection', function(socket){
-		PRESENTER.onAddPresentation(socket);
-		PRESENTER.onAddSlide(socket);
-		PRESENTER.onViewSlide(socket);
+	io.on('connection', function( socket ){
+		PRESENTER.onAddPresentation( socket );
+		PRESENTER.onDeletePresentation( socket );
+		PRESENTER.onAddSlide( socket );
+		PRESENTER.onViewSlide( socket );
 	});
 };
 
@@ -39,6 +53,13 @@ PRESENTER.onAddPresentation = function( socket ) {
 	})
 };
 
+PRESENTER.onDeletePresentation = function( socket ) {
+	socket.on("deletePresentation", function( id ) {
+		var presentation = PRESENTER.deletePresentation( id );
+		socket.emit("deletedPresentation", presentation);
+	})
+};
+
 PRESENTER.onAddSlide = function( socket ) {
 	socket.on("addSlide", function( id, data ){
 		var presentation = PRESENTER.getPresentation( id );
@@ -46,7 +67,6 @@ PRESENTER.onAddSlide = function( socket ) {
 			var slide = presentation.addSlide( data );
 			socket.emit("addedSlide", slide);
 		}
-		return new Slide();
 	});
 };
 

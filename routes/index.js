@@ -8,13 +8,14 @@ router.get('/', function(req, res) {
 
 router.get('/:id/view', function(req, res) {
 	var id = req.param("id");
-	var presentation = PRESENTER.getPresentation(id);
-	res.render('view', { title: 'Control', presentation: presentation});
+	var presentation = GLOBAL.PRESENTER.getPresentation(id);
+	res.render('view', { title: 'View', presentation: presentation});
 });
 
 router.get('/:id/control', function(req, res) {
-	var presentation = PRESENTER.getPresentation(id);
-	res.render('control', { title: 'Viewer', presentation: presentation});
+	var id = req.param("id");
+	var presentation = GLOBAL.PRESENTER.getPresentation(id);
+	res.render('control', { title: 'Control', presentation: presentation});
 });
 
 module.exports = router;
