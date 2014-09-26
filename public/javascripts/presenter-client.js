@@ -22,7 +22,6 @@ PRESENTER.View = {};
 
 PRESENTER.View.initSocketEvents = function() {
 	socket.on("view", function( data ){
-		console.log( "data:", data );
 		var viewer = $('#viewer');
 		if(data.type === 'text') {
 			var text = $('<span></span>').text(data.item);

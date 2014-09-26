@@ -15,8 +15,6 @@ PRESENTER.loadPresentations = function() {
 		videos: videos,
 		text: text.split("\n")
 	};
-
-	console.log(PRESENTER.Files);
 }
 
 PRESENTER.onConnect = function( io ) {
