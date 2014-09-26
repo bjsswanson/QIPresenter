@@ -2,3 +2,5 @@ node_modules
 persist
 .idea/
 *.iml
+.DS_Store
+

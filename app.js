@@ -1,3 +1,4 @@
+var debug = require('debug')('QIPresenter');
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -7,14 +8,11 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 
-var storage = require('node-persist');
-storage.initSync();
-
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-GLOBAL.PRESENTER = require('./presenter-server')(storage, io);
+GLOBAL.PRESENTER = require('./presenter-server')(io, server);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -25,8 +23,8 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'files')));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'shared')));
 
 app.use('/', routes);
 
@@ -61,8 +59,8 @@ app.use(function(err, req, res, next) {
     });
 });
 
-module.exports = {
-	"app": app,
-	"server": server,
-	"io": io
-};
+app.set('port', process.env.PORT || 3000);
+
+server.listen(app.get('port'), function() {
+	debug('Express server listening on port ' + server.address().port);
+});
